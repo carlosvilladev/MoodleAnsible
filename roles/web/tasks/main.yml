@@ -1,0 +1,62 @@
+---
+- name: Settings Overlay
+  template : src=daemon.json dest=/etc/docker/daemon.json
+  notify:
+    - stop docker
+    - start docker
+
+- name: Install Ansible
+  apt:
+    name: ansible
+    state: latest
+
+- name: Agregamos hosts
+  template: src=hosts dest=/etc/ansible/hosts
+
+- name: Guardamos Dockerfile
+  template: src=Dockerfile dest=/opt/Dockerfile
+
+- name: Contruir imagen
+  docker_image:
+    name: php_apache
+    path: /opt
+    state: present
+    #dockerfile: /opt/Dockerfile
+
+- name: Create container
+  docker_container:
+    #docker_host: 192.34.79.165:8080
+    name: moodle2
+    image: php_apache
+    volumes:
+      - /data/moodle:/var/www/html/
+      - /data/moodledata:/var/www/moodledata
+    state: started
+    command: /bin/bash
+    interactive: yes
+    network_mode: host
+    restart_policy: unless-stopped
+    etc_hosts:
+      ingenieria-1: 192.34.79.165
+
+- name: Agregar Roles de Playbook Moodle al servidor
+  synchronize: src=templates/app dest=/opt
+
+- name: Ejecutar Playbook en Container
+  command: ansible-playbook moodle.yml
+  args:
+    chdir: /opt/app
+#- name: add container to inventory
+#  add_host:
+#    name: moodle2
+#    ansible_connection: docker
+    #ansible_docker_extra_args: "--tlsverify --tlscacert=/path/to/ca.pem --tlscert=/path/to/client-cert.pem --tlskey=/path/to/client-key.pem -H=tcp://myserver.net:4243"
+#    ansible_user: ubuntu
+#  changed_when: false
+
+# - name: create directory for ssh keys
+#   file:
+#     path: "/hola"
+#     state: directory
+
+# tasks file for web

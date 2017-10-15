@@ -1,0 +1,7 @@
+---
+# handlers file for web
+- name: start docker
+  service: name=docker state=started
+
+- name: stop docker
+  service: name=docker state=stopped

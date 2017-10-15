@@ -1,0 +1,10 @@
+---
+- name: Pull Ubuntu 16.04 Imag
+  docker_image:
+    name: ubuntu:16.04
+
+- name: Remove image
+  docker_image:
+    state: absent
+    name: ubuntu:16.04
+# tasks file for db

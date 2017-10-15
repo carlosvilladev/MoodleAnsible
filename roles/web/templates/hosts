@@ -1,0 +1,2 @@
+[webapp]
+moodle2 ansible_connection=docker

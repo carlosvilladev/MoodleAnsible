@@ -1,0 +1,5 @@
+---
+  - name: Instalación y Configuración de Moodle en Docker Container
+    hosts: webapp
+    roles:
+     - moodle
