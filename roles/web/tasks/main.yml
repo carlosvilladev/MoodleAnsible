@@ -16,7 +16,7 @@
 - name: Guardamos Dockerfile
   template: src=Dockerfile dest=/opt/Dockerfile
 
-- name: Contruir imagen
+- name: Construir imagen
   docker_image:
     name: php_apache
     path: /opt
